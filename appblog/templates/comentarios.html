@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postagem principal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Estilos anteriores... */
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .post-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .comment-section {
+            width: 80%;
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .comment {
+            background-color: #262626;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .comment img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .comment-content {
+            margin-left: 40px;
+
+        }
+
+        .add-comment {
+            margin-top: 20px;
+
+        }
+
+        input {
+            width: 98.1%;
+        }
+
+        .botao_comentar {
+            width: 100%;
+
+        }
+
+        .add-comment input {
+
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #262626;
+            color: #fff;
+        }
+
+        .add-comment input[type="submit"] {
+            background-color: #333;
+            cursor: pointer;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #0e0d0d;
+            border-radius: 10px;
+        }
+
+        .navbar a {
+            color: #f5f5f5;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+
+        .navbar a:hover {
+            background-color: #333;
+        }
+
+        .feed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Centraliza horizontalmente os posts */
+            margin: 20px;
+        }
+
+        .post {
+            background-color: #242020;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            margin-left: auto;
+            /* Adiciona margem automática dos lados */
+            margin-right: auto;
+            /* Adiciona margem automática dos lados */
+            max-width: 100% !important;
+            /* Largura máxima do post para melhor visualização em telas grandes */
+            width: 96%;
+            /* Faz com que o post ocupe a largura necessária até o máximo */
+        }
+
+
+        .post .interaction {
+            color: #8a8888;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-left: 100px;
+        }
+
+        .fa-regular {
+            margin: 10px;
+        }
+
+        strong {
+            top: -15px;
+            margin-left: 10px;
+            position: relative;
+            ;
+        }
+
+        .post img {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+        }
+
+        .profile img {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            margin-left: 10px;
+        }
+
+        .coment {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+        }
+        .comment-section img{
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .post {
+            position: relative;
+            /* Torna a div um contêiner de posicionamento relativo */
+            /* Outros estilos do post */
+        }
+
+
+        .delete_post {
+            position: absolute;
+            /* Posiciona o botão absolutamente dentro do seu contêiner relativo */
+            top: 5px;
+            /* Alinha o botão ao topo do contêiner */
+            right: 5px;
+            /* Alinha o botão à direita do contêiner */
+            border: none;
+            /* Opcional: remove a borda do botão */
+            background-color: transparent;
+            /* Opcional: torna o fundo do botão transparente */
+            cursor: pointer;
+            /* Muda o cursor para indicar que o botão é clicável */
+            color: #3b3838;
+        }
+
+        .delete_coment {
+            position: relative;
+            /* Posiciona o botão absolutamente dentro do seu contêiner relativo */
+            top: 5px;
+            /* Alinha o botão ao topo do contêiner */
+            right: -97%;
+            /* Alinha o botão à direita do contêiner */
+            border: none;
+            /* Opcional: remove a borda do botão */
+            background-color: transparent;
+            /* Opcional: torna o fundo do botão transparente */
+            cursor: pointer;
+            /* Muda o cursor para indicar que o botão é clicável */
+            color: #3b3838;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'time_line' %}">Feed</a>
+        <a href="{%url 'perfil' %}">Meu perfil</a>
+    </div>
+
+    <div class="post-container">
+        <!-- Publicação principal -->
+        <div class="post">
+            {% if publicacao.usuario.nome == request.user.username%}
+
+            <form action="{% url 'delete_post_time' %}" method="POST"> {% csrf_token %}
+                <button type="submit" class="delete_post"><i class="fa-solid fa-trash"></i></button>
+                <input type="hidden" name="post_delete" value="{{publicacao.id}}">
+            </form>
+            {% endif %}
+            <!-- Conteúdo da publicação -->
+            <img src="{{publicacao.usuario.foto_perfil.url}}" class="imagem-coment" alt="Profile Picture">
+            <strong>{{publicacao.usuario.nome}}</strong>
+            <p style="margin-left: 10%;">{{publicacao.conteudo}}</p>
+            <div class="interaction" style="margin-left: 20%;">
+
+
+                <button type="submit" class="coment btn btn-primary" style="margin-left: 20px;"><i
+                        class="fa-regular fa-comment"></i>{{publicacao.comentarios.count}} comentarios</button>
+            </div>
+        </div>
+
+        <!-- Seção de comentários -->
+        <div class="comment-section">
+            {% for comentario in comentarios %}
+
+            <div class="comment">
+            {% if request.user.username == comentario.usuario.nome or publicacao.usuario.nome == request.user.username %}
+                <form action="{% url 'delete_comentario' comentario.id %}" method="POST">{% csrf_token %}
+                    <button type="submit" class="delete_coment"><i class="fa-solid fa-trash"></i></button>
+                    <input type="hidden" name='id_post' value='{{publicacao.id}}'>
+                </form>
+                {% endif %}
+                <img src="{{ comentario.usuario.foto_perfil.url }}"
+                    alt="Profile Picture de {{ comentario.usuario.nome }}">
+                <div class="comment-content">
+
+                    <strong style="top: -25px;"> {{ comentario.usuario.nome }}</strong>
+                    <p style="margin-left: 10%;">{{ comentario.texto }}</p>
+                   
+                </div>
+            </div>
+            <!-- Repita a estrutura acima para mais comentários -->
+            {% empty %}
+            <p>Nenhum comentário foi feito ainda.</p>
+            {% endfor %}
+            <!-- Adicionar comentário -->
+            <div class="add-comment">
+                <form action="{% url 'comentar'  %}" method="POST">{% csrf_token %}
+                    <input type="hidden" name="id_post" value="{{publicacao.id}}">
+                    <input type="text" name="comentar" placeholder="Adicione um comentário...">
+                    <input type="submit" class="botao_comentar" value="Comentar">
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+
+</script>
+
+</html>

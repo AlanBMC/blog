@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Line</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+
+        }
+
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            align-items: center;
+            background-color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .navbar a {
+    color: #f5f5f5;
+    text-decoration: none;
+    padding: 5px;
+    transition: transform 0.2s; /* Duração da animação */
+    
+}
+
+.navbar a:hover {
+    transform: scale(1.2); /* Aumenta o tamanho do elemento em 20% */
+}
+
+/* Ajustando também para a imagem de perfil na navbar */
+.foto_nav {
+    transition: transform 0.2s; /* Duração da animação */
+}
+
+.foto_nav:hover {
+    transform: scale(1.1); /* Aumenta o tamanho da imagem em 20% */
+}
+
+        .feed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Centraliza horizontalmente os posts */
+            margin: 20px;
+        }
+
+        .post {
+            background-color: #1a1a1a;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            margin-left: auto;
+            /* Adiciona margem automática dos lados */
+            margin-right: auto;
+            /* Adiciona margem automática dos lados */
+            max-width: 800px;
+            /* Largura máxima do post para melhor visualização em telas grandes */
+            width: 100%;
+            /* Faz com que o post ocupe a largura necessária até o máximo */
+        }
+
+
+        .post .interaction {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-left: 100px;
+        }
+
+        .fa-regular {
+            margin: 5px;
+        }
+
+        strong {
+            top: -15px;
+            margin-left: 10px;
+            position: relative;
+            ;
+        }
+
+        .post img {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+        }
+
+        .profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+
+        .coment {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .post {
+            position: relative;
+            /* Torna a div um contêiner de posicionamento relativo */
+            /* Outros estilos do post */
+        }
+
+        .delete {
+            position: absolute;
+            /* Posiciona o botão absolutamente dentro do seu contêiner relativo */
+            top: 5px;
+            /* Alinha o botão ao topo do contêiner */
+            right: 5px;
+            /* Alinha o botão à direita do contêiner */
+            border: none;
+            /* Opcional: remove a borda do botão */
+            background-color: transparent;
+            /* Opcional: torna o fundo do botão transparente */
+            cursor: pointer;
+            /* Muda o cursor para indicar que o botão é clicável */
+            color: #333;
+        }
+        .foto_nav{
+            width: 2.5vw;
+            height: 2.5vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .fa-solid{
+            font-size: 17px;
+            transition: transform 0.1s;
+        }
+        .post i:hover{
+            color: red;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'perfil' %}" ><img src="{{ foto_perfil }}" class="foto_nav" alt="Foto de perfil"></a>
+
+        <a href="{% url 'time_line' %}"  >Feed</a>
+        <a href="{% url 'conf' %}"><i class="fa-solid fa-gear"></i></a>
+        <a href="{% url 'logout' %}">Sair</a>
+
+    </div>
+    <div class="feed">
+        <div class="post">
+            <form id="publishForm" style="display: flex; flex-direction: column;" action="{% url 'publicar_perfil' %}"
+                method="POST"> {% csrf_token %}
+                <label for="postContent" style="margin-bottom: 10px; color: #f5f5f5;">Sua Publicação:</label>
+                <textarea id="postContent" rows="4" name="publicacao" placeholder="O que está pensando?"
+                    style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: none; background-color: #262626; color: #fff;"></textarea>
+                <input type="submit" value="Publicar"
+                    style="padding: 10px; border-radius: 5px; border: none; background-color: #333; color: #fff; cursor: pointer;">
+                <input type="hidden" name="usuario_atual" value="">
+            </form>
+        </div>
+    </div>
+    <div class="feed">
+
+        <!--post -->
+
+        {%for publi in publicacoes %}
+        <div class="post">
+            {% if publi.usuario.nome == request.user.username%}
+            <form action="{% url 'delete_post_perfil' %}" method="POST">{%csrf_token%}
+                <button type="submit" class="delete"><i class="fa-solid fa-trash"></i></button>
+                <input type="hidden" name="post_delete" value="{{publi.id}}">
+            </form>
+            {% endif %}
+            <img src="{{ publi.usuario.foto_perfil.url }}" alt="Foto de perfil">
+            <strong style="top: -15px;">{{publi.usuario.nome}}</strong>
+            <p style="margin-left: 10%;">{{publi.conteudo}}</p>
+            <div class="interaction" style="margin-left: 37%;">
+               
+                <form action="{% url 'comentarios' publi.id %}" method="POST">{%csrf_token%}
+
+                    <button type="submit" class="coment btn btn-primary" style="margin-left: 20px;"><i
+                        class="fa-regular fa-comment"></i>{{publi.comentarios.count}} comentarios</button>
+                        <input type="hidden" name="id_post" value="{{publi.id}}">
+                        <input type="hidden"  name="nome_usuario" value={{publi.usuario.nome}}>
+                        
+                </form>
+            </div>
+        </div>
+        {%empty%}
+        <p>Sem publicaçoes</p>
+        {% endfor %}
+        <!-- End Post  -->
+
+    </div>
+
+</body>
+<script>
+
+
+</script>
+
+</html>
