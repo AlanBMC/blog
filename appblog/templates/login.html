@@ -65,6 +65,33 @@ span.psw {
   float: right;
   padding-top: 16px;
 }
+.alert-messages {
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.alert-success {
+    background-color: #4CAF50; /* Verde */
+}
+
+.alert-error, .alert-danger {
+    background-color: #f44336; /* Vermelho */
+}
+
+.alert-info {
+    background-color: #2196F3; /* Azul */
+}
+
+.alert-warning {
+    background-color: #ff9800; /* Laranja */
+}
+
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
@@ -83,6 +110,16 @@ span.psw {
     <form action="{% url 'login_' %}" method="post"> {% csrf_token %} 
         
         <div class="container">
+          {% if messages %}
+          <div class="alert-messages">
+              {% for message in messages %}
+                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+          </div>
+      {% endif %}
+      
           <label for="uname"><b>Username</b></label>
           <input type="text" placeholder="Enter Username" name="uname" required>
       

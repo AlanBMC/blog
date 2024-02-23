@@ -94,18 +94,51 @@ span.psw {
             
 
         }
+        .alert-messages {
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.alert-success {
+    background-color: #4CAF50; /* Verde */
+}
+
+.alert-error, .alert-danger {
+    background-color: #f44336; /* Vermelho */
+}
+
+.alert-info {
+    background-color: #2196F3; /* Azul */
+}
+
+.alert-warning {
+    background-color: #ff9800; /* Laranja */
+}
+
     </style>
 </head>
 <body>
-  <div class="navbar">
-    <a > </a>
-    <a>BLOGANDO</a>
-    <a> </a>
-  </div>
+
   <H1>CADASTRO</H1>
     <form action="{% url 'cadastro' %}" enctype="multipart/form-data" method="POST">  {% csrf_token %} 
         
         <div class="container">
+          {% if messages %}
+              <div class="alert-messages">
+                  {% for message in messages %}
+                      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              </div>
+          {% endif %}
+
                <input type="file" name="imagem_de_perfil"><br>
           <label for="uname" style="margin: 10px;"><b>Username</b></label>
           <input type="text" placeholder="Enter Username" name="uname" required>
@@ -114,10 +147,8 @@ span.psw {
           <input type="password" placeholder="Enter Password" name="psw" required>
       
           <button type="submit">Cadastrar</button>
-          <a href="{% url 'login_' %}"><button>Ja tenho conta</button></a>
         </div>
-      
-      
       </form>
+      <a href="{% url 'login_' %}"><button>Ja tenho conta</button></a>
 </body>
 </html>

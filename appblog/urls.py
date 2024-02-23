@@ -21,6 +21,6 @@ urlpatterns = [
     path('comentarios/<int:id_post>', views.comentarios, name='comentarios'),
     path('comentar/', views.comentar, name='comentar'),
     
-    path('delete_comentario/<int:comentario_id>', views.delete_comentario, name='delete_comentario')
-
+    path('delete_comentario/<int:comentario_id>', views.delete_comentario, name='delete_comentario'),
+    path('buscar_usuarios/', views.buscar_usuarios, name='buscar_usuarios'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

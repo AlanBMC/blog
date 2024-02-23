@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Postagem principal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
     <style>
         /* Estilos anteriores... */
         body {
@@ -34,8 +36,8 @@
 
         .comment {
             background-color: #262626;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 5px;
+            margin-bottom: 5px;
             border-radius: 5px;
         }
 
@@ -51,7 +53,7 @@
         }
 
         .add-comment {
-            margin-top: 20px;
+            margin-top: 10px;
 
         }
 
@@ -83,19 +85,31 @@
             display: flex;
             justify-content: space-between;
             padding: 10px 20px;
-            background-color: #0e0d0d;
-            border-radius: 10px;
+            align-items: center;
+            background-color: #1a1a1a;
+            margin-bottom: 10px;
         }
 
         .navbar a {
-            color: #f5f5f5;
-            text-decoration: none;
-            padding: 5px 10px;
-        }
+    color: #f5f5f5;
+    text-decoration: none;
+    padding: 5px;
+    transition: transform 0.2s; /* Duração da animação */
+    
+}
 
-        .navbar a:hover {
-            background-color: #333;
-        }
+.navbar a:hover {
+    transform: scale(1.2); /* Aumenta o tamanho do elemento em 20% */
+}
+
+/* Ajustando também para a imagem de perfil na navbar */
+.foto_nav {
+    transition: transform 0.2s; /* Duração da animação */
+}
+
+.foto_nav:hover {
+    transform: scale(1.2); /* Aumenta o tamanho da imagem em 20% */
+}
 
         .feed {
             display: flex;
@@ -214,7 +228,33 @@
             /* Muda o cursor para indicar que o botão é clicável */
             color: #3b3838;
         }
-        
+        .foto_nav{
+            width: 2.5vw;
+            height: 2.5vw;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .fa-solid{
+            font-size: 17px;
+            transition: transform 0.1s;
+        }
+        .post i:hover{
+            color: red;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .comment i:hover{
+            color: red;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .nome-usuario {
+            /* Seus estilos aqui */
+            text-decoration: none;
+            /* Exemplo: remove o sublinhado dos links */
+            color: rgb(148, 148, 148);
+            /* Exemplo: define a cor do texto */
+        }
     </style>
 </head>
 
@@ -222,7 +262,7 @@
 
     <div class="navbar">
         <a href="{% url 'time_line' %}">Feed</a>
-        <a href="{%url 'perfil' %}">Meu perfil</a>
+        <a href="{% url 'perfil' %}" style="top: -10px;"><img src="{{ foto_perfil }}" class="foto_nav" alt="Foto de perfil"></a>
     </div>
 
     <div class="post-container">
@@ -235,11 +275,19 @@
                 <input type="hidden" name="post_delete" value="{{publicacao.id}}">
             </form>
             {% endif %}
+            <strong style="text-decoration: none;             position: absolute;
+            /* Posiciona o botão absolutamente dentro do seu contêiner relativo */
+            top: 5px;
+            right: 5px;
+            border: none;
+            font-size: 15px;
+            background-color: transparent;
+            color: #3b3838;">{{ publicacao.data_hora|date:"d/m/Y H:i" }}</strong>
             <!-- Conteúdo da publicação -->
             <img src="{{publicacao.usuario.foto_perfil.url}}" class="imagem-coment" alt="Profile Picture">
-            <strong>{{publicacao.usuario.nome}}</strong>
+            <a href="{% url 'perfil_usuario' publicacao.usuario.id %}" class="nome-usuario"><strong>{{publicacao.usuario.nome}}</strong></a>
             <p style="margin-left: 10%;">{{publicacao.conteudo}}</p>
-            <div class="interaction" style="margin-left: 20%;">
+            <div class="interaction" style="margin-left: 40%;">
 
 
                 <button type="submit" class="coment btn btn-primary" style="margin-left: 20px;"><i
@@ -252,17 +300,19 @@
             {% for comentario in comentarios %}
 
             <div class="comment">
+
             {% if request.user.username == comentario.usuario.nome or publicacao.usuario.nome == request.user.username %}
                 <form action="{% url 'delete_comentario' comentario.id %}" method="POST">{% csrf_token %}
                     <button type="submit" class="delete_coment"><i class="fa-solid fa-trash"></i></button>
                     <input type="hidden" name='id_post' value='{{publicacao.id}}'>
                 </form>
                 {% endif %}
+                
                 <img src="{{ comentario.usuario.foto_perfil.url }}"
                     alt="Profile Picture de {{ comentario.usuario.nome }}">
                 <div class="comment-content">
 
-                    <strong style="top: -25px;"> {{ comentario.usuario.nome }}</strong>
+                   <a href="{% url 'perfil_usuario' comentario.usuario.id %}" class="nome-usuario"><strong style="top: -2.2vw"> {{ comentario.usuario.nome }}</strong></a>
                     <p style="margin-left: 10%;">{{ comentario.texto }}</p>
                    
                 </div>
